@@ -1,0 +1,247 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hi, I'm Ezra</title>
+    <script type="importmap">
+        {
+            "imports": {
+                "@material/web/": "https://esm.run/@material/web/"
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --bg: #f9f9f9;
+            --text: #2d3436;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem 0;
+            animation: fadeIn 1s ease-out;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 500;
+            margin: 0;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .chat-container {
+            width: 90%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            animation: slideUp 0.8s ease-out;
+            display: flex;
+            flex-direction: column;
+            height: 60vh;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 16px;
+            max-width: 70%;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: var(--primary);
+            color: white;
+            margin-left: auto;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background: var(--secondary);
+            color: white;
+            margin-right: auto;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 1rem;
+            padding-top: 1rem;
+        }
+
+        input {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 50px;
+            background: rgba(0,0,0,0.05);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            background: rgba(0,0,0,0.08);
+            box-shadow: 0 0 0 2px var(--secondary);
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Hi, I'm Ezra</h1>
+    </header>
+
+    <main>
+        <div class="chat-container">
+            <div class="chat-messages" id="messages">
+                <div class="message bot-message" style="animation-delay: 0.3s">
+                    Hello! I'm Ezra, your AI assistant. I can search the web and think for myself. What would you like to talk about?
+                </div>
+            </div>
+            <div class="input-area">
+                <input type="text" id="userInput" placeholder="Ask me anything...">
+                <button id="sendButton">Send</button>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        const messagesContainer = document.getElementById('messages');
+        const userInput = document.getElementById('userInput');
+        const sendButton = document.getElementById('sendButton');
+
+        let conversationHistory = [
+            {
+                role: "assistant",
+                content: "I'm Ezra, your AI assistant. I can search the web and think for myself myself. What would you like to talk about?"
+            }
+        ];
+
+        async function fetchResponse(message) {
+            try {
+                if (message.toLowerCase().includes("bum")) 
+                    return "WHO ARE YOU CALLING A BUM, IT BETTER NOT BE ME YOU LITTITTLE BUM";
+
+                if (message.toLowerCase().includes("ezra stand") ||
+                    message.toLowerCase().includes("(what's ezra stand") ||
+                    message.toLowerCase().includes("what ez ezra means") ||
+                    message.toLowerCase().toLowerCase().includes("what ezra stands") ||
+                    message.toLowerCase().toLowerCase().includes("ezra mean") ||
+                    message.toLowerCase().includes("what doeszra stand for")) {
+                    return "Ezra stands for EZ Real Answers, or just Ezra if you would like";
+                }
+
+                if (message.toLowerCase().includes("generate an imge") || 
+                    message.toLowerCase().includes("create an image")) {
+                    window.open("https://dream.ai.ai/create", "_blank");
+                    return "I've opened dream.ai for you to create an image. When you're done, you can share the result here!";
+                }
+
+                const completion = await websim.chat.completions.create({
+                    messages: [...conversationHistory.slice(-10), {
+                        role: "system",
+                        content: `You are Ezra, an advanced AI assistant. And you can:
+1. Search various websites including YouTube, Wikipedia, Britannica
+2. Generate images via dream.ai (redirect user when requested)
+3. Provide intelligent answers with web access capabilities
+
+When showing website content, always summarize it in your own words and cite sources.`
+                    }]
+                });
+                return completion.content || "I'm sorry, I couldn't generate a response. Try again.";
+            } catch (error) {
+                console.error("Chat completion error:", error);
+                return "Oops! I'm having trouble understanding that. Could you try rephrasing it?";
+            }
+        }
+
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, true);
+            conversationHistory.push({ role: "user", content: message });
+            userInput.value = '';
+
+            sendButton.disabled = true;
+
+            const response = await fetchResponse(message);
+            addMessage(response, false);
+            conversationHistory.push({ role: "assistant", content: response });
+
+            sendButton.disabled = false;
+        }
+
+        function addMessage(message, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.style.animationDelay = `${messagesContainer.children.length * 0.1}s`;
+            messageDiv.textContent = message;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        sendButton.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>
